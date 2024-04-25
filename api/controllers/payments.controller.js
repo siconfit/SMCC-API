@@ -1,16 +1,16 @@
 import { openDB } from "../db.js"
 
-export const getUsers = async (req, res) => {
+export const getPayments = async (req, res) => {
     try {
         const db = await openDB()
         db.connect()
-        const [rows] = await db.query('SELECT * FROM tbl_usuarios')
+        const [rows] = await db.query('SELECT * FROM tbl_pagos')
         db.end()
         if (rows.length > 0) {
             res.json(rows)
         } else {
             res.status(404).json({
-                message: 'No se encontraron usuarios'
+                message: 'No se encontraron pagos'
             })
         }
     } catch (error) {
@@ -20,18 +20,18 @@ export const getUsers = async (req, res) => {
     }
 }
 
-export const getUser = async (req, res) => {
+export const getPayment = async (req, res) => {
     try {
         const { id } = req.params
         const db = await openDB()
         db.connect()
-        const [rows] = await db.query('SELECT * FROM tbl_usuarios WHERE id = ?', [id])
+        const [rows] = await db.query('SELECT * FROM tbl_pagos WHERE pago_id = ?', [id])
         db.end()
         if (rows.length > 0) {
             res.json(rows[0])
         } else {
             res.status(404).json({
-                message: 'No se encontro al usuario'
+                message: 'No se encontraron pagos'
             })
         }
     } catch (error) {
@@ -41,20 +41,21 @@ export const getUser = async (req, res) => {
     }
 }
 
-export const createUser = async (req, res) => {
+export const createPayment = async (req, res) => {
     try {
-        const { nombre, cedula, nickname, contrasena } = req.body
+        const { cuenta_id, valor_pagado, fecha_pago } = req.body
         const db = await openDB()
         db.connect()
-        const [result] = await db.query('INSERT INTO tbl_usuarios (nombre, cedula, nickname, contrasena) VALUES (?, ?, ?, ?)', [nombre, cedula, nickname, contrasena])
+        const [result] = await db.query('INSERT INTO tbl_pagos ( VALUES (?, ?, ?, ?)', [cuenta_id, valor_pagado, fecha_pago])
         db.end()
         if (result.affectedRows > 0) {
             res.json({
-                message: 'Usuario creado correctamente'
+                message: 'Pago creado',
+                id: result.insertId
             })
         } else {
             res.status(404).json({
-                message: 'No se pudo crear el usuario'
+                message: 'No se pudo crear el pago'
             })
         }
     } catch (error) {
@@ -64,50 +65,49 @@ export const createUser = async (req, res) => {
     }
 }
 
-export const updateUser = async (req, res) => {
-    try {
-        const { id } = req.params
-        const { nombre, cedula, nickname, contrasena } = req.body
-        const db = await openDB()
-        db.connect()
-        const [result] = await db.query('UPDATE tbl_usuarios SET nombre = ?, cedula = ?, nickname = ?, contrasena = ? WHERE usuario_id = ?', [nombre, cedula, nickname, contrasena, id])
-        db.end()
-        if (result.affectedRows > 0) {
-            res.json({
-                message: 'Usuario actualizado correctamente'
-            })
-        } else {
-            res.status(404).json({
-                message: 'No se pudo actualizar el usuario'
-            })
-        }
-    } catch (error) {
-        return res.status(500).json({
-            message: 'Something goes wrong'
-        })
-    }
-}
-
-export const deleteUser = async (req, res) => {
+export const updatePayment = async (req, res) => {
     try {
         const { id } = req.params
+        const { cuenta_id, valor_pagado, fecha_pago } = req.body
         const db = await openDB()
         db.connect()
-        // const [result] = await db.query('DELETE FROM tbl_usuarios WHERE usuario_id = ?', [id])
-        const [result] = await db.query('UPDATE tbl_usuarios SET estado = 0 WHERE usuario_id = ?', [id])
+        const [result] = await db.query('UPDATE tbl_pagos SET cuenta_id = ?, valor_pagado = ?, fecha_pago = ? WHERE pago_id = ?', [cuenta_id, valor_pagado, fecha_pago, id])
         db.end()
         if (result.affectedRows > 0) {
             res.json({
-                message: 'Usuario eliminado correctamente'
+                message: 'Pago actualizado'
             })
         } else {
             res.status(404).json({
-                message: 'No se pudo eliminar el usuario'
+                message: 'No se pudo actualizar el pago'
             })
         }
     } catch (error) {
         return res.status(500).json({
             message: 'Something goes wrong'
+        })
+    }
+}
+
+export const deletePayment = async (req, res) => {
+    try {
+        const { id } = req.params
+        const db = await openDB()
+        db.connect()
+        const [result] = await db.query('DELETE FROM tbl_pagos WHERE pago_id = ?', [id])
+        db.end()
+        if (result.affectedRows > 0) {
+            res.json({
+                message: 'Pago eliminado'
+            })
+        } else {
+            res.status(404).json({
+                message: 'No se pudo eliminar el pago'
+            })
+        }
+    } catch (error) {
+        return res.status(500).json({
+            message: `Something goes wrong: ${error}`
         })
     }
 }

@@ -1,16 +1,16 @@
 import { openDB } from "../db.js"
 
-export const getUsers = async (req, res) => {
+export const getRelations = async (req, res) => {
     try {
         const db = await openDB()
         db.connect()
-        const [rows] = await db.query('SELECT * FROM tbl_usuarios')
+        const [rows] = await db.query('SELECT * FROM tbl_clientes_usuarios')
         db.end()
         if (rows.length > 0) {
             res.json(rows)
         } else {
             res.status(404).json({
-                message: 'No se encontraron usuarios'
+                message: 'No se encotraron relaciones'
             })
         }
     } catch (error) {
@@ -20,18 +20,18 @@ export const getUsers = async (req, res) => {
     }
 }
 
-export const getUser = async (req, res) => {
+export const getRelation = async (req, res) => {
     try {
         const { id } = req.params
         const db = await openDB()
         db.connect()
-        const [rows] = await db.query('SELECT * FROM tbl_usuarios WHERE id = ?', [id])
+        const [rows] = await db.query('SELECT * FROM tbl_clientes_usuarios WHERE cliente_usuario_id = ?', [id])
         db.end()
         if (rows.length > 0) {
             res.json(rows[0])
         } else {
             res.status(404).json({
-                message: 'No se encontro al usuario'
+                message: 'No se encotro la relacion'
             })
         }
     } catch (error) {
@@ -41,20 +41,20 @@ export const getUser = async (req, res) => {
     }
 }
 
-export const createUser = async (req, res) => {
+export const createRelation = async (req, res) => {
     try {
-        const { nombre, cedula, nickname, contrasena } = req.body
+        const { cliente_id, usuario_id } = req.body
         const db = await openDB()
         db.connect()
-        const [result] = await db.query('INSERT INTO tbl_usuarios (nombre, cedula, nickname, contrasena) VALUES (?, ?, ?, ?)', [nombre, cedula, nickname, contrasena])
+        const [result] = await db.query('INSERT INTO tbl_clientes_usuarios (cliente_id, usuario_id) VALUES (?, ?)', [cliente_id, usuario_id])
         db.end()
         if (result.affectedRows > 0) {
             res.json({
-                message: 'Usuario creado correctamente'
+                message: 'Relacion creada correctamente'
             })
         } else {
             res.status(404).json({
-                message: 'No se pudo crear el usuario'
+                message: 'No se pudo crear la relacion'
             })
         }
     } catch (error) {
@@ -64,45 +64,45 @@ export const createUser = async (req, res) => {
     }
 }
 
-export const updateUser = async (req, res) => {
-    try {
-        const { id } = req.params
-        const { nombre, cedula, nickname, contrasena } = req.body
-        const db = await openDB()
-        db.connect()
-        const [result] = await db.query('UPDATE tbl_usuarios SET nombre = ?, cedula = ?, nickname = ?, contrasena = ? WHERE usuario_id = ?', [nombre, cedula, nickname, contrasena, id])
-        db.end()
-        if (result.affectedRows > 0) {
-            res.json({
-                message: 'Usuario actualizado correctamente'
-            })
-        } else {
-            res.status(404).json({
-                message: 'No se pudo actualizar el usuario'
-            })
-        }
-    } catch (error) {
-        return res.status(500).json({
-            message: 'Something goes wrong'
-        })
-    }
-}
-
-export const deleteUser = async (req, res) => {
+export const updateRelation = async (req, res) => {
     try {
         const { id } = req.params
+        const { cliente_id, usuario_id } = req.body
         const db = await openDB()
         db.connect()
-        // const [result] = await db.query('DELETE FROM tbl_usuarios WHERE usuario_id = ?', [id])
-        const [result] = await db.query('UPDATE tbl_usuarios SET estado = 0 WHERE usuario_id = ?', [id])
+        const [result] = await db.query('UPDATE tbl_clientes_usuarios SET cliente_id = ?, usuario_id = ? WHERE cliente_usuario_id = ?', [cliente_id, usuario_id, id])
         db.end()
         if (result.affectedRows > 0) {
             res.json({
-                message: 'Usuario eliminado correctamente'
+                message: 'Relacion actualizada correctamente'
             })
         } else {
             res.status(404).json({
-                message: 'No se pudo eliminar el usuario'
+                message: 'No se pudo actualizar la relacion'
+            })
+        }
+    } catch (error) {
+        return res.status(500).json({
+            message: 'Something goes wrong'
+        })
+    }
+}
+
+export const deleteRelation = async (req, res) => {
+    try {
+        const { id } = req.params
+        const db = await openDB()
+        db.connect()
+        // const [result] = await db.query('DELETE FROM tbl_clientes_usuarios WHERE cliente_usuario_id = ?', [id])
+        const [result] = await db.query('UPDATE tbl_clientes_usuarios SET estado = 0 WHERE cliente_usuario_id = ?', [id])
+        db.end()
+        if (result.affectedRows > 0) {
+            res.json({
+                message: 'Relacion eliminada correctamente'
+            })
+        } else {
+            res.json({
+                message: 'No se pudo eliminar la relacion'
             })
         }
     } catch (error) {
