@@ -9,7 +9,7 @@ import pruebas from './routes/pruebas.routes.js'
 const app = express()
 app.use(express.json())
 
-app.use(users)
+app.use('/api/users', users)
 app.use(clients)
 app.use(relations)
 app.use(accounts)

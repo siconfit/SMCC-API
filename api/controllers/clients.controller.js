@@ -25,7 +25,7 @@ export const getClient = async (req, res) => {
         const { id } = req.params
         const db = await openDB()
         db.connect()
-        const [rows] = await db.query('SELECT * FROM tbl_clientes WHERE cli_id = ?', [id])
+        const [rows] = await db.query('SELECT * FROM tbl_clientes WHERE cliente_id = ?', [id])
         db.end()
         if (rows.length > 0) {
             res.json(rows[0])
@@ -43,16 +43,32 @@ export const getClient = async (req, res) => {
 
 export const createClient = async (req, res) => {
     try {
+        // const { id } = req.params
         const { nombre, cedula, direccion, telefono } = req.body
+
         const db = await openDB()
         db.connect()
+
         const [result] = await db.query('INSERT INTO tbl_clientes (nombre, cedula, direccion, telefono) VALUES (?, ?, ?, ?)', [nombre, cedula, direccion, telefono])
         db.end()
         if (result.affectedRows > 0) {
+            // const [secRes] = await db.query('INSERT INTO tbl_clientes_usuarios (cliente_id, usuario_id) VALUES (?, ?)', [result.insertId, id])
+            // db.end()
+            // if (secRes.affectedRows > 0) {
+            //     res.json({
+            //         message: 'Cliente registrado'
+            //     })
+            // } else {
+            //     res.status(400).json({
+            //         message: 'Error al vincular al cliente'
+            //     })
+            // }
             res.json({
-                message: 'Cliente registrado'
+                message: 'Cliente registrado',
+                cliente_id: result.insertId
             })
         } else {
+            db.end()
             res.status(400).json({
                 message: 'No se pudo registrar el cliente'
             })
