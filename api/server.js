@@ -10,8 +10,8 @@ const app = express()
 app.use(express.json())
 
 app.use('/api/users', users)
-app.use(clients)
-app.use(relations)
+app.use('/api/clients', clients)
+app.use('/api/relations', relations)
 app.use(accounts)
 app.use(payments)
 

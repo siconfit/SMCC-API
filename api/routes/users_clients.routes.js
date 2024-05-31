@@ -1,13 +1,13 @@
 import { Router } from "express"
-import { getRelations, getRelation, getRelationsUser, createRelation, updateRelation, deleteRelation } from "../controllers/users_clients.controller.js"
+import { getRelationsUser, createRelation } from "../controllers/users_clients.controller.js"
 
 const router = Router()
 
-router.get('/relations', getRelations)
-router.get('/relations/:id', getRelation)
-router.get('/relations/user/:id', getRelationsUser)
-router.post('/relations', createRelation)
-router.put('/relations/:id', updateRelation)
-router.delete('/relations/:id', deleteRelation)
+// router.get('/', getRelations)
+// router.get('/:id', getRelation)
+router.get('/user/:id', getRelationsUser)
+router.post('/', createRelation)
+// router.put('/:id', updateRelation)
+// router.delete('/:id', deleteRelation)
 
 export default router
