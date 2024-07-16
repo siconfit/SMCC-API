@@ -1,12 +1,13 @@
 import { Router } from "express"
-import { getAccounts, getAccount, createAccount, updateAccount, deleteAccount } from "../controllers/accounts.controller.js"
+import { getCredits, getCredit, getClientCredits, createCredit, updateCredit, deleteCredit } from "../controllers/accounts.controller.js"
 
 const router = Router()
 
-router.get("/accounts", getAccounts)
-router.get("/accounts/:id", getAccount)
-router.post("/accounts", createAccount)
-router.put("/accounts/:id", updateAccount)
-router.delete("/accounts/:id", deleteAccount)
+router.get("/", getCredits)
+router.get("/:id", getCredit)
+router.get('/client/:id', getClientCredits)
+router.post("/", createCredit)
+router.put("/:id", updateCredit)
+router.delete("/:id", deleteCredit)
 
 export default router

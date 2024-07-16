@@ -25,7 +25,7 @@ export const secondaryAuth = async (req, res) => {
         const { usuario, contrasena } = req.body
         const db = await openDB()
         db.connect()
-        const [rows] = await db.query('SELECT cuenta_secundaria_id, cuenta_principal_id, usuario, nombre FROM tbl_cuentas_secundaria WHERE usuario = ? && contrasena = ?', [usuario, contrasena])
+        const [rows] = await db.query('SELECT cuenta_secundaria_id, cuenta_principal_id, nombre, cedula, telefono, rol FROM tbl_cuentas_secundaria WHERE usuario = ? && contrasena = ?', [usuario, contrasena])
         db.end()
         if (rows.length > 0) {
             const user = rows[0]
@@ -42,10 +42,10 @@ export const secondaryAuth = async (req, res) => {
 
 export const createMain = async (req, res) => {
     try {
-        const { usuario, contrasena, nombre_empresa } = req.body
+        const { usuario, nombre_empresa } = req.body
         const db = await openDB()
         db.connect()
-        const [result] = await db.query('INSERT INTO tbl_cuentas_principal (usuario, contrasena, nombre_empresa) VALUES (?, ?, ?)', [usuario, contrasena, nombre_empresa])
+        const [result] = await db.query('INSERT INTO tbl_cuentas_principal (usuario, nombre_empresa) VALUES (?, ?)', [usuario, nombre_empresa])
         db.end()
         if (result.affectedRows > 0) {
             res.json({ message: 'Empresa creada con exito!' })
