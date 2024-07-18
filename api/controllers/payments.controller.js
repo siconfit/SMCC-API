@@ -5,7 +5,7 @@ export const getPayments = async (req, res) => {
         const { id } = req.params
         const db = await openDB()
         db.connect()
-        const [rows] = await db.query('SELECT * FROM tbl_pagos WHERE credito_id = ?  ORDER BY fecha_pago ASC', [id])
+        const [rows] = await db.query('SELECT * FROM tbl_pagos WHERE credito_id = ?  ORDER BY pago_id ASC', [id])
 
         db.end()
         if (rows.length > 0) {
@@ -46,11 +46,11 @@ export const searchPayments = async (req, res) => {
 
 export const createPayment = async (req, res) => {
     try {
-        const arrayPagos = req.body
+        const { arrayPagos, credito_id } = req.body
 
         const pagosData = arrayPagos.map((data) => {
             return [
-                data.credito_id,
+                credito_id,
                 data.valor_pagado,
                 data.fecha_pago
             ]
@@ -63,11 +63,11 @@ export const createPayment = async (req, res) => {
         db.end()
         if (result.affectedRows > 0) {
             res.json({
-                message: 'Pago creado'
+                message: 'Pagos registrados'
             })
         } else {
             res.status(404).json({
-                message: 'No se pudo crear el pago'
+                message: 'No se pudo registrar los pagos'
             })
         }
     } catch (error) {
@@ -127,9 +127,19 @@ export const postponePayment = async (req, res) => {
                 })
             }
         } else {
-            res.status(404).json({
-                message: 'No se encontro el pago'
-            })
+            const [result] = await db.query('INSERT INTO tbl_pagos (credito_id, valor_pagado) VALUES (?, ?)', [credito_id, valor_pagado])
+            if (result.affectedRows > 0) {
+                await db.query('UPDATE tbl_pagos SET valor_pagado = 0.00, estado = 2 WHERE pago_id = ?', [id])
+                db.end()
+                res.json({
+                    message: 'Pago actualizado'
+                })
+            } else {
+                db.end()
+                res.status(404).json({
+                    message: 'No se pudo aplazar el pago'
+                })
+            }
         }
     } catch (error) {
         return res.status(500).json({

@@ -71,8 +71,8 @@ export const createCredit = async (req, res) => {
         db.end()
         if (result.affectedRows > 0) {
             res.json({
-                message: 'Cliente registrado',
-                cliente_id: result.insertId
+                message: 'Credito registrado',
+                credito_id: result.insertId
             })
         } else {
             res.status(404).json({
