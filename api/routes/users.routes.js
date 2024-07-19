@@ -3,7 +3,7 @@ import { verifySubscription, mainAuth, secondaryAuth, getMain, getSecondary, cre
 
 const router = Router()
 
-router.post('subscription/:id', verifySubscription)
+router.get('/subscription/:id', verifySubscription)
 router.post('/mainAuth', mainAuth)
 router.post('/secondaryAuth', secondaryAuth)
 router.get('/main', getMain)
