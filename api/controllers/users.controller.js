@@ -1,5 +1,19 @@
 import { openDB } from "../db.js"
 
+export const verifySubscription = async (req, res) => {
+    try {
+        const { id } = req.params
+        const db = await openDB()
+        db.connect()
+        const [rows] = await db.query('SELECT estado FROM tbl_cuentas_principal WHERE cuenta_principal_id = ?', [id])
+        db.end()
+        const user = rows[0]
+        res.json(user)
+    } catch (error) {
+
+    }
+}
+
 export const mainAuth = async (req, res) => {
     try {
         const { usuario } = req.body
