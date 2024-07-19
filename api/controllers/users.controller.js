@@ -25,7 +25,7 @@ export const secondaryAuth = async (req, res) => {
         const { usuario, contrasena } = req.body
         const db = await openDB()
         db.connect()
-        const [rows] = await db.query('SELECT cuenta_secundaria_id, cuenta_principal_id, nombre, cedula, telefono, rol FROM tbl_cuentas_secundaria WHERE usuario = ? && contrasena = ?', [usuario, contrasena])
+        const [rows] = await db.query('SELECT cuenta_secundaria_id, cuenta_principal_id, nombre, cedula, telefono, rol, estado FROM tbl_cuentas_secundaria WHERE usuario = ? && contrasena = ?', [usuario, contrasena])
         db.end()
         if (rows.length > 0) {
             const user = rows[0]
