@@ -5,6 +5,7 @@ import relations from './routes/users_clients.routes.js'
 import accounts from './routes/acounts.routes.js'
 import payments from './routes/payments.routes.js'
 import periods from './routes/collection_period.routes.js'
+import admin from './routes/superadmin.routes.js'
 
 const app = express()
 app.use(express.json())
@@ -15,6 +16,7 @@ app.use('/api/relations', relations)
 app.use('/api/credits', accounts)
 app.use('/api/periods', periods)
 app.use('/api/payments', payments)
+app.use('/api/admin', admin)
 
 
 app.get('/', (req, res) => {

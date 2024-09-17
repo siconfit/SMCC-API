@@ -54,40 +54,6 @@ export const secondaryAuth = async (req, res) => {
     }
 }
 
-export const createMain = async (req, res) => {
-    try {
-        const { usuario, nombre_empresa } = req.body
-        const db = await openDB()
-        db.connect()
-        const [result] = await db.query('INSERT INTO tbl_cuentas_principal (usuario, nombre_empresa) VALUES (?, ?)', [usuario, nombre_empresa])
-        db.end()
-        if (result.affectedRows > 0) {
-            res.json({ message: 'Empresa creada con exito!' })
-        } else {
-            res.status(404).json({ message: 'Error al crear la empresa!' })
-        }
-    } catch (error) {
-
-    }
-}
-
-export const createSecondary = async (req, res) => {
-    try {
-        const { cuenta_principal_id, usuario, contrasena, nombre, cedula, telefono, rol } = req.body
-        const db = await openDB()
-        db.connect()
-        const [result] = await db.query('INSERT INTO tbl_cuentas_secundaria (cuenta_principal_id, usuario, contrasena, nombre, cedula, telefono, rol) VALUES (?, ?, ?, ?, ?, ?, ?)', [cuenta_principal_id, usuario, contrasena, nombre, cedula, telefono, rol])
-        db.end()
-        if (result.affectedRows > 0) {
-            res.json({ message: 'Usuario creado con exito!' })
-        } else {
-            res.status(404).json({ message: 'Error al crear el usuario!' })
-        }
-    } catch (error) {
-
-    }
-}
-
 export const getMain = async (req, res) => {
     try {
         const db = await openDB()
@@ -127,51 +93,3 @@ export const getSecondary = async (req, res) => {
         })
     }
 }
-
-// export const updateUser = async (req, res) => {
-//     try {
-//         const { id } = req.params
-//         const { nombre, cedula, nickname, contrasena } = req.body
-//         const db = await openDB()
-//         db.connect()
-//         const [result] = await db.query('UPDATE tbl_usuarios SET nombre = ?, cedula = ?, nickname = ?, contrasena = ? WHERE usuario_id = ?', [nombre, cedula, nickname, contrasena, id])
-//         db.end()
-//         if (result.affectedRows > 0) {
-//             res.json({
-//                 message: 'Usuario actualizado correctamente'
-//             })
-//         } else {
-//             res.status(404).json({
-//                 message: 'No se pudo actualizar el usuario'
-//             })
-//         }
-//     } catch (error) {
-//         return res.status(500).json({
-//             message: 'Something goes wrong'
-//         })
-//     }
-// }
-
-// export const deleteUser = async (req, res) => {
-//     try {
-//         const { id } = req.params
-//         const db = await openDB()
-//         db.connect()
-//         // const [result] = await db.query('DELETE FROM tbl_usuarios WHERE usuario_id = ?', [id])
-//         const [result] = await db.query('UPDATE tbl_usuarios SET estado = 0 WHERE usuario_id = ?', [id])
-//         db.end()
-//         if (result.affectedRows > 0) {
-//             res.json({
-//                 message: 'Usuario eliminado correctamente'
-//             })
-//         } else {
-//             res.status(404).json({
-//                 message: 'No se pudo eliminar el usuario'
-//             })
-//         }
-//     } catch (error) {
-//         return res.status(500).json({
-//             message: 'Something goes wrong'
-//         })
-//     }
-// }
