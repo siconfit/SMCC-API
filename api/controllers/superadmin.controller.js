@@ -77,8 +77,9 @@ export const getMain = async (req, res) => {
 export const getSecondary = async (req, res) => {
     try {
         const db = await openDB()
+        const { id } = req.params
         db.connect()
-        const [rows] = await db.query('SELECT * FROM tbl_cuentas_secundaria')
+        const [rows] = await db.query('SELECT * FROM tbl_cuentas_secundaria WHERE cuenta_principal_id = ?', [id])
         db.end()
         if (rows.length > 0) {
             res.json(rows)
